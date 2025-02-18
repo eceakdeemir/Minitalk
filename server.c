@@ -6,31 +6,33 @@
 void my_handler(int param, siginfo_t *info, void *context)
 {
     (void)context;
-    printf("signal buradan geldi: %d, gelen signal: %d\n", info->si_pid, param);
+	(void)info;
+    //printf("signal buradan geldi: %d, gelen signal: %d\n", info->si_pid, param);
 
-	int bit_i;
-	char text;
+	static int bit_i;
+	static unsigned char text;
 
-	bit_i = 0;
-	text = 0;
 	if (param == SIGUSR1)
+	{
 		text |= (1 << (7 - bit_i));
+		//printf("%d\n", text);
+	}
 	bit_i++;
 	if (bit_i == 8)
 	{
 		if (text != '\0')
-			printf("%c", text);
+			write(1,&text,1);
 		bit_i = 0;
 		text = 0;
 	}
-    kill(info->si_pid, SIGUSR1);
+    // kill(info->si_pid, SIGUSR1);
 }
 
 
 int main()
 {
     struct sigaction sa;
-    pid_t server_pid;
+    int server_pid;
 
     server_pid = getpid();
     sa.sa_flags = SA_SIGINFO;

@@ -7,5 +7,5 @@ server: $(SRV_OBJS)
 	gcc -Wall -Wextra -Werror server.c -o server
 
 client: $(CL_OBJS)
-	gcc -Wall -Wextra -Werror client.c -o client
+	gcc -Wall -Wextra -Werror client.c -g -o client
 
