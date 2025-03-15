@@ -6,7 +6,7 @@
 /*   By: ecakdemi <ecakdemi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:31:16 by ecakdemi          #+#    #+#             */
-/*   Updated: 2025/02/19 15:15:43 by ecakdemi         ###   ########.fr       */
+/*   Updated: 2025/03/15 11:23:44 by ecakdemi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ void	my_handler(int param, siginfo_t *info, void *context)
 	(void)context;
 	(void)info;
 	if (param == SIGUSR1)
+	{
 		text |= (1 << (7 - bit_i));
+	}
 	bit_i++;
 	if (bit_i == 8)
 	{
@@ -29,6 +31,7 @@ void	my_handler(int param, siginfo_t *info, void *context)
 		bit_i = 0;
 		text = 0;
 	}
+	kill(info->si_pid, SIGUSR1);
 }
 
 int	main(void)
@@ -39,13 +42,12 @@ int	main(void)
 	server_pid = getpid();
 	sa.sa_flags = SA_SIGINFO;
 	sa.sa_sigaction = my_handler;
-	printf("server '%d' started\n", server_pid);
+	ft_printf("server '%d' started\n", server_pid);
 	if (sigaction(SIGUSR1, &sa, NULL) == -1)
-		exit(404);
+		exit(0);
 	else if (sigaction(SIGUSR2, &sa, NULL) == -1)
-		exit(404);
+		exit(0);
 	while (42)
 		pause();
-	
 	return (0);
 }

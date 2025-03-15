@@ -6,11 +6,22 @@
 /*   By: ecakdemi <ecakdemi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:31:06 by ecakdemi          #+#    #+#             */
-/*   Updated: 2025/02/19 14:33:43 by ecakdemi         ###   ########.fr       */
+/*   Updated: 2025/03/15 11:10:41 by ecakdemi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
+volatile sig_atomic_t g_SignalStatus = 0;
+
+void	listening_signal(int signum)
+{
+	if (signum == SIGUSR1)
+		g_SignalStatus = 1;
+	else
+		exit(1);
+}
+
 
 void	send_character(char character, pid_t server_id)
 {
@@ -20,12 +31,14 @@ void	send_character(char character, pid_t server_id)
 	bit_i = 7;
 	while (bit_i >= 0)
 	{
-		usleep(100);
+		g_SignalStatus = 0;
 		bit = (character >> bit_i) & 1;
 		if (bit == 1)
 			kill(server_id, SIGUSR1);
 		else
 			kill(server_id, SIGUSR2);
+		while (g_SignalStatus == 0)
+			pause();
 		bit_i--;
 	}
 }
@@ -59,16 +72,17 @@ pid_t	server_id_control(char *id)
 
 int	main(int ac, char **av)
 {
-	char	*signal;
+	char	*string_signal;
 	char	*server_id;
 	pid_t	server_pid;
 
 	if (ac != 3)
 		return (1);
-	signal = av[2];
+	string_signal = av[2];
 	server_id = av[1];
 	server_pid = server_id_control(server_id);
+	signal(SIGUSR1, listening_signal);
 	if (server_pid)
-		sending_str(signal, server_pid);
+		sending_str(string_signal, server_pid);
 	return (0);
 }
