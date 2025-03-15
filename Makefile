@@ -32,6 +32,7 @@ client_bonus: $(CL_BNS_OBJ) $(OBJ_PRINTF)
 	$(CC) $(CFLAGS) $(CL_BNS_OBJ) $(PRINTF_A) -o client_bonus
 
 clean:
+	rm -f *.o
 	rm -f server client
 	rm -f server_bonus client_bonus
 
@@ -40,4 +41,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re server_bonus client_bonus bonus
+.PHONY: all clean fclean re bonus
