@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ecakdemi <ecakdemi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:31:16 by ecakdemi          #+#    #+#             */
-/*   Updated: 2025/03/15 16:20:15 by ecakdemi         ###   ########.fr       */
+/*   Updated: 2025/03/15 16:21:11 by ecakdemi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minitalk.h"
+#include "minitalk_bonus.h"
 
 void	my_handler(int param, siginfo_t *info, void *context)
 {
@@ -25,7 +25,11 @@ void	my_handler(int param, siginfo_t *info, void *context)
 	bit_i++;
 	if (bit_i == 8)
 	{
-		if (text != '\0')
+		if (text == '\0')
+		{
+			ft_printf("\nSending pid: %d, message received.\n", info->si_pid);
+		}
+		else
 			write(1, &text, 1);
 		bit_i = 0;
 		text = 0;
